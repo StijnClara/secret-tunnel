@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morihbet v.z.w. — Morgen Is Het Beter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B2A4A;
+    --night-light:#2C3F66;
+    --dawn:#E8703A;
+    --gold:#F0B429;
+    --paper:#F1EEE4;
+    --paper-light:#F8F5EC;
+    --ink:#211C18;
+    --muted:#5B554C;
+    --line: rgba(33,28,24,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; margin:0; line-height:1.08; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-light);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1140px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:11px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px;
+  }
+  .brand .mark{
+    width:32px; height:32px; border-radius:50%;
+    background:conic-gradient(from 200deg, var(--night), var(--dawn), var(--gold), var(--night));
+    flex-shrink:0;
+  }
+  nav ul{ list-style:none; display:flex; gap:22px; margin:0; padding:0; }
+  nav a{ text-decoration:none; font-weight:500; font-size:14px; color:var(--night); }
+  nav a:hover{ color:var(--dawn); }
+  .navlinks-desktop{ display:flex; align-items:center; gap:16px; }
+  .nav-cta{
+    background:var(--night); color:var(--paper-light) !important;
+    padding:9px 16px; border-radius:20px; font-size:13.5px; font-weight:600;
+    text-decoration:none; white-space:nowrap;
+  }
+  .nav-cta:hover{ background:var(--dawn); }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; position:relative; z-index:60; }
+  .menu-btn span{ display:block; width:22px; height:2px; background:var(--night); margin:5px 0; transition:transform .2s ease, opacity .2s ease; }
+  .menu-btn.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2){ opacity:0; }
+  .menu-btn.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu{ display:none; }
+  .mobile-menu.open{
+    display:flex; flex-direction:column;
+    background:var(--paper-light); border-top:1px solid var(--line);
+    padding:6px 28px 24px; gap:0;
+  }
+  .mobile-menu a{
+    padding:14px 0; font-size:15.5px; font-weight:500; color:var(--night);
+    text-decoration:none; border-bottom:1px solid var(--line);
+  }
+  .mobile-menu a.current{ color:var(--dawn); }
+  .mobile-menu a.mobile-cta{
+    border-bottom:none; text-align:center; margin-top:16px;
+    background:var(--night); color:var(--paper-light); border-radius:20px;
+    padding:13px 0; font-weight:600;
+  }
+  .mobile-menu .lang-toggle{ margin-top:16px; align-self:center; }
+
+  /* language toggle */
+  .lang-toggle{
+    display:flex; align-items:center; border:1.5px solid var(--night);
+    border-radius:16px; overflow:hidden; font-family:'IBM Plex Mono', monospace;
+    font-size:12px; font-weight:500;
+  }
+  .lang-toggle button{
+    background:none; border:none; cursor:pointer;
+    padding:7px 14px; color:var(--night); font-family:inherit; font-size:inherit; font-weight:inherit;
+  }
+  .lang-toggle button.active{ background:var(--night); color:var(--paper-light); }
+
+  /* ---------- HERO: the dawn ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    background:linear-gradient(180deg, var(--night) 0%, var(--night) 38%, #6A4E5C 58%, var(--dawn) 78%, var(--gold) 100%);
+    padding:96px 0 0;
+    color:var(--paper-light);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:120px;
+    background:var(--paper);
+    clip-path: polygon(0 100%, 100% 100%, 100% 40%, 75% 55%, 50% 35%, 25% 58%, 0 42%);
+  }
+  .hero-inner{ position:relative; z-index:2; text-align:center; padding-bottom:170px; }
+  .hero-eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.12em;
+    text-transform:uppercase; opacity:0.75; margin-bottom:20px;
+  }
+  .hero-brand{
+    font-family:'Fraunces', serif; font-weight:700;
+    font-size:clamp(16px, 2vw, 20px);
+    letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(40px, 6vw, 70px); font-weight:600; letter-spacing:-0.01em;
+  }
+  .taglines{
+    margin:26px auto 0; max-width:640px;
+    display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
+    font-size:15px; color:rgba(248,245,236,0.85);
+  }
+  .taglines span:not(:last-child)::after{ content:"·"; margin-left:18px; opacity:0.5; }
+  .hero-actions{ margin-top:38px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary{
+    background:var(--paper-light); color:var(--night);
+    padding:14px 28px; border-radius:24px; text-decoration:none;
+    font-weight:700; font-size:15px; display:inline-block;
+    transition:transform .15s ease;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{
+    border:1.5px solid rgba(248,245,236,0.55); color:var(--paper-light);
+    padding:13px 26px; border-radius:24px; text-decoration:none;
+    font-weight:600; font-size:15px; display:inline-block;
+  }
+  .btn-ghost:hover{ background:rgba(248,245,236,0.1); }
+
+  /* ---------- REG STRIP ---------- */
+  .regstrip{
+    background:var(--paper); padding:14px 0 46px;
+    text-align:center;
+  }
+  .regstrip .mono{ font-size:12px; color:var(--muted); letter-spacing:0.03em; }
+
+  /* ---------- MISSION ---------- */
+  .mission{ padding:20px 0 70px; }
+  .mission-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px; align-items:center; }
+  .section-eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--dawn); font-weight:500; margin-bottom:16px;
+  }
+  .mission h2{ font-size:clamp(26px,3vw,34px); color:var(--night); }
+  .mission p{ font-size:16.5px; line-height:1.65; color:var(--muted); margin-top:18px; max-width:52ch; }
+  .globe-card{
+    background:var(--night); border-radius:8px; padding:34px;
+    color:var(--paper-light); position:relative;
+  }
+  .globe-card .mono{ font-size:12px; opacity:0.6; letter-spacing:0.05em; }
+  .globe-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:14px 0; border-bottom:1px solid rgba(248,245,236,0.14);
+  }
+  .globe-row:last-child{ border-bottom:none; }
+  .globe-row .num{ font-family:'Fraunces', serif; font-size:28px; color:var(--gold); font-weight:600; }
+  .globe-row .lbl{ font-size:13.5px; opacity:0.8; text-align:right; max-width:60%; }
+
+  /* ---------- PROGRAM STAMPS ---------- */
+  .programs{ background:var(--paper-light); padding:80px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .section-head{ max-width:58ch; margin-bottom:52px; }
+  .section-head h2{ font-size:clamp(28px,3.4vw,36px); color:var(--night); }
+  .section-head p{ color:var(--muted); font-size:16px; margin-top:14px; line-height:1.6; }
+
+  .stamp-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:34px; }
+  .stamp{
+    border:2px dashed rgba(27,42,74,0.35);
+    border-radius:50%;
+    aspect-ratio:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:30px;
+    position:relative;
+    transform:rotate(var(--r,0deg));
+  }
+  .stamp:nth-child(1){ --r:-3deg; }
+  .stamp:nth-child(2){ --r:2deg; }
+  .stamp:nth-child(3){ --r:-1.5deg; }
+  .stamp-icon{ font-size:28px; margin-bottom:12px; }
+  .stamp h3{ font-size:18px; color:var(--night); margin-bottom:8px; }
+  .stamp p{ font-size:13px; color:var(--muted); line-height:1.5; margin:0; }
+  .stamp-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:0.08em;
+    color:var(--dawn); text-transform:uppercase; margin-top:10px; font-weight:500;
+  }
+
+  /* ---------- FIELD NOTES ---------- */
+  .fieldnotes{ padding:80px 0; }
+  .notes-list{ display:flex; flex-direction:column; }
+  .note-row{
+    display:grid; grid-template-columns:120px 1fr 140px; gap:24px; align-items:center;
+    padding:22px 0; border-bottom:1px solid var(--line);
+  }
+  .note-row:first-child{ border-top:1px solid var(--line); }
+  .note-loc{ font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--dawn); font-weight:500; }
+  .note-desc h4{ font-family:'Fraunces', serif; font-size:17px; color:var(--night); font-weight:600; margin-bottom:4px; }
+  .note-desc p{ font-size:13.5px; color:var(--muted); margin:0; }
+  .note-status{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.04em;
+    text-align:right; color:var(--muted);
+  }
+  .dot{ display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--dawn); margin-right:6px; }
+
+  /* ---------- BENEFICIARY QUOTE ---------- */
+  .story{ background:var(--night); color:var(--paper-light); padding:80px 0; }
+  .story-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
+  .story-photo{
+    background:linear-gradient(135deg, var(--dawn), var(--gold));
+    border-radius:8px; aspect-ratio:4/3;
+    display:flex; align-items:center; justify-content:center;
+    color:rgba(27,42,74,0.65); font-family:'IBM Plex Mono',monospace; font-size:13px;
+  }
+  .story blockquote{
+    font-family:'Fraunces', serif; font-size:25px; font-weight:600; line-height:1.4; margin:0;
+  }
+  .story .attribution{ margin-top:18px; font-size:14px; opacity:0.7; }
+
+  /* ---------- GET INVOLVED ---------- */
+  .involved{ padding:80px 0; }
+  .involved-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .involved-card{
+    border:1.5px solid var(--night); border-radius:8px; padding:30px 26px;
+    display:flex; flex-direction:column; height:100%;
+  }
+  .involved-card h3{ font-size:20px; color:var(--night); margin-bottom:10px; }
+  .involved-card p{ font-size:14.5px; color:var(--muted); line-height:1.55; flex-grow:1; margin:0 0 20px; }
+  .involved-card a{
+    font-weight:700; font-size:14px; text-decoration:none; color:var(--dawn);
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .involved-card a::after{ content:"→"; transition:transform .15s ease; }
+  .involved-card a:hover::after{ transform:translateX(3px); }
+
+  /* ---------- FOOTER ---------- */
+  footer{ background:var(--night); color:var(--paper); padding:50px 0 26px; }
+  .footer-grid{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px;
+    padding-bottom:30px; border-bottom:1px solid rgba(248,245,236,0.15);
+  }
+  footer .brand{ color:var(--paper-light); }
+  .footer-cols{ display:flex; gap:56px; flex-wrap:wrap; }
+  .footer-col h4{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.06em;
+    text-transform:uppercase; opacity:0.6; margin-bottom:14px; font-weight:500;
+  }
+  .footer-col a, .footer-col p{
+    display:block; text-decoration:none; color:var(--paper); opacity:0.85;
+    font-size:14px; margin-bottom:9px;
+  }
+  .footer-col a:hover{ opacity:1; color:var(--gold); }
+  .footer-bottom{
+    display:flex; justify-content:space-between; padding-top:20px;
+    font-size:12.5px; opacity:0.55; flex-wrap:wrap; gap:10px;
+  }
+
+  @media (max-width: 880px){
+    .mission-grid, .story-grid{ grid-template-columns:1fr; }
+    .stamp-grid, .involved-grid{ grid-template-columns:1fr; max-width:340px; margin:0 auto; }
+    .note-row{ grid-template-columns:1fr; gap:6px; text-align:left; }
+    .note-status{ text-align:left; }
+    .navlinks-desktop{ display:none; }
+    .menu-btn{ display:block; }
+    .footer-grid{ flex-direction:column; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+  :focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <a href="#" class="brand"><span class="mark"></span>Morihbet v.z.w.</a>
+    <div class="navlinks-desktop">
+      <nav>
+        <ul>
+          <li><a href="#mission" data-nl="Over ons" data-en="About">Over ons</a></li>
+          <li><a href="#fieldnotes" data-nl="Lopende projecten" data-en="Current Projects">Lopende projecten</a></li>
+          <li><a href="#involved" data-nl="Steun ons" data-en="Get Involved">Steun ons</a></li>
+          <li><a href="gallery-nl.html" data-nl="Foto's" data-en="Gallery">Foto's</a></li>
+          <li><a href="events-nl.html" data-nl="Evenementen" data-en="Events">Evenementen</a></li>
+        </ul>
+      </nav>
+      <a href="#donate" class="nav-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+      <div class="lang-toggle">
+        <button type="button" data-lang-btn="nl" class="active">NL</button>
+        <button type="button" data-lang-btn="en">EN</button>
+      </div>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu openen" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#mission" data-nl="Over ons" data-en="About">Over ons</a>
+    <a href="#fieldnotes" data-nl="Lopende projecten" data-en="Current Projects">Lopende projecten</a>
+    <a href="#involved" data-nl="Steun ons" data-en="Get Involved">Steun ons</a>
+    <a href="gallery-nl.html" data-nl="Foto's" data-en="Gallery">Foto's</a>
+    <a href="events-nl.html" data-nl="Evenementen" data-en="Events">Evenementen</a>
+    <a href="#donate" class="mobile-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+    <div class="lang-toggle">
+      <button type="button" data-lang-btn="nl" class="active">NL</button>
+      <button type="button" data-lang-btn="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-eyebrow" data-nl="Brakel, België · vzw" data-en="Brakel, Belgium · non-profit">Brakel, België · vzw</div>
+    <div class="hero-brand">Morihbet</div>
+    <h1 data-nl="Morgen is het beter." data-en="Tomorrow will be better.">Morgen is het beter.</h1>
+    <div class="taglines">
+      <span>Morgen is het beter</span>
+      <span>Tomorrow will be better</span>
+      <span>Demain c'est mieux</span>
+    </div>
+    <p style="max-width:52ch; margin:24px auto 0; font-size:16.5px; color:rgba(248,245,236,0.85); line-height:1.6;"
+       data-nl="Een kleine Belgische vzw die gezondheidszorg, levensonderhoud en onderwijs financiert voor gemeenschappen in ontwikkelingslanden — project per project."
+       data-en="A small Belgian non-profit funding healthcare, livelihoods, and education for communities in developing countries — one project at a time.">
+      Een kleine Belgische vzw die gezondheidszorg, levensonderhoud en onderwijs financiert voor gemeenschappen in ontwikkelingslanden — project per project.
+    </p>
+    <div class="hero-actions">
+      <a href="#donate" class="btn-primary" data-nl="Steun een project" data-en="Support a project">Steun een project</a>
+      <a href="#fieldnotes" class="btn-ghost" data-nl="Bekijk lopende projecten" data-en="See current projects">Bekijk lopende projecten</a>
+    </div>
+  </div>
+</section>
+
+<div class="regstrip">
+  <span class="mono" data-nl="Geregistreerde vzw in België · Nr. 0526.839.266" data-en="Registered non-profit in Belgium · No. 0526.839.266">Geregistreerde vzw in België · Nr. 0526.839.266</span>
+</div>
+
+<section class="mission" id="mission">
+  <div class="wrap mission-grid">
+    <div>
+      <div class="section-eyebrow" data-nl="Wie we zijn" data-en="Who we are">Wie we zijn</div>
+      <h2 data-nl="Vrijwilligerswerk, project per project." data-en="Volunteer-run, project by project.">Vrijwilligerswerk, project per project.</h2>
+      <p data-nl="Morihbet vzw wordt gerund door vrijwilligers vanuit Brakel, Oost-Vlaanderen. We hebben geen groot kantoor of budget — we identificeren specifieke, lokale noden in het buitenland en financieren ze rechtstreeks: een doktersbezoek, een klein bedrijfje, een jaar schoolgeld."
+         data-en="Morihbet vzw is run by volunteers out of Brakel, East Flanders. We don't run a large office or a big budget — we identify specific, local needs abroad and fund them directly: a clinic visit, a small business, a year of school fees.">
+        Morihbet vzw wordt gerund door vrijwilligers vanuit Brakel, Oost-Vlaanderen. We hebben geen groot kantoor of budget — we identificeren specifieke, lokale noden in het buitenland en financieren ze rechtstreeks: een doktersbezoek, een klein bedrijfje, een jaar schoolgeld.
+      </p>
+      <p data-nl="Elke euro wordt gekoppeld aan een concreet project en een concrete gemeenschap. Geen overheadlaag, geen giswerk — gewoon het volgende dat nodig is."
+         data-en="Every euro is tracked against a named project and a named community. No overhead layer, no guesswork — just the next thing that needs doing.">
+        Elke euro wordt gekoppeld aan een concreet project en een concrete gemeenschap. Geen overheadlaag, geen giswerk — gewoon het volgende dat nodig is.
+      </p>
+    </div>
+    <div class="globe-card">
+      <div class="mono" data-nl="// WAAR JOUW STEUN NAARTOE GAAT" data-en="// WHERE YOUR SUPPORT GOES">// WAAR JOUW STEUN NAARTOE GAAT</div>
+      <div class="globe-row">
+        <div class="num">1</div>
+        <div class="lbl" data-nl="Toegang tot gezondheidszorg en essentiële medische hulp" data-en="Healthcare access &amp; essential medical support">Toegang tot gezondheidszorg en essentiële medische hulp</div>
+      </div>
+      <div class="globe-row">
+        <div class="num">2</div>
+        <div class="lbl" data-nl="Hulp bij levensonderhoud en klein inkomen" data-en="Livelihood assistance &amp; small-income support">Hulp bij levensonderhoud en klein inkomen</div>
+      </div>
+      <div class="globe-row">
+        <div class="num">3</div>
+        <div class="lbl" data-nl="Onderwijsprogramma's en schoolondersteuning" data-en="Education programs &amp; school support">Onderwijsprogramma's en schoolondersteuning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="programs" id="programs">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow" data-nl="Wat we financieren" data-en="What we fund">Wat we financieren</div>
+      <h2 data-nl="Drie soorten hulp, samen met de gemeenschap gekozen." data-en="Three kinds of help, chosen with the community.">Drie soorten hulp, samen met de gemeenschap gekozen.</h2>
+      <p data-nl="Elk project wordt voorgesteld en beoordeeld samen met de mensen die het dient, niet op afstand bedacht." data-en="Each project is proposed and reviewed with the people it serves, not designed from a distance.">Elk project wordt voorgesteld en beoordeeld samen met de mensen die het dient, niet op afstand bedacht.</p>
+    </div>
+    <div class="stamp-grid">
+      <div class="stamp">
+        <div class="stamp-icon">✚</div>
+        <h3 data-nl="Gezondheidszorg" data-en="Healthcare">Gezondheidszorg</h3>
+        <p data-nl="Doktersbezoeken, medicijnen en spoedzorg voor gezinnen die het anders niet zouden krijgen." data-en="Clinic visits, medicine, and emergency care for families who would otherwise go without.">Doktersbezoeken, medicijnen en spoedzorg voor gezinnen die het anders niet zouden krijgen.</p>
+        <div class="stamp-tag" data-nl="Essentiële zorg" data-en="Essential care">Essentiële zorg</div>
+      </div>
+      <div class="stamp">
+        <div class="stamp-icon">◈</div>
+        <h3 data-nl="Levensonderhoud" data-en="Livelihood">Levensonderhoud</h3>
+        <p data-nl="Kleine beurzen en middelen waarmee een gezin een eigen, stabiel inkomen opbouwt." data-en="Small grants and tools that let a family build steady income of their own.">Kleine beurzen en middelen waarmee een gezin een eigen, stabiel inkomen opbouwt.</p>
+        <div class="stamp-tag" data-nl="Zelfredzaamheid" data-en="Self-reliance">Zelfredzaamheid</div>
+      </div>
+      <div class="stamp">
+        <div class="stamp-icon">✎</div>
+        <h3 data-nl="Onderwijs" data-en="Education">Onderwijs</h3>
+        <p data-nl="Schoolgeld, materiaal en ondersteuning zodat de opleiding van een kind niet wordt afgebroken." data-en="School fees, supplies, and support so a child's education isn't cut short.">Schoolgeld, materiaal en ondersteuning zodat de opleiding van een kind niet wordt afgebroken.</p>
+        <div class="stamp-tag" data-nl="Kansen" data-en="Opportunity">Kansen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="fieldnotes" id="fieldnotes">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow" data-nl="Lopende projecten" data-en="Current projects">Lopende projecten</div>
+      <h2 data-nl="Waar we momenteel mee bezig zijn." data-en="What's underway right now.">Waar we momenteel mee bezig zijn.</h2>
+    </div>
+    <div class="notes-list">
+      <div class="note-row">
+        <div class="note-loc">FILIPIJNEN</div>
+        <div class="note-desc">
+          <h4 data-nl="Schoolsponsoring, middelbare scholieren" data-en="School sponsorship, secondary students">Schoolsponsoring, middelbare scholieren</h4>
+          <p data-nl="Dekking van schoolgeld en materiaal voor het komende schooljaar." data-en="Covering tuition and supplies for the coming school year.">Dekking van schoolgeld en materiaal voor het komende schooljaar.</p>
+        </div>
+        <div class="note-status"><span class="dot"></span><span data-nl="LOPEND" data-en="ONGOING">LOPEND</span></div>
+      </div>
+      <div class="note-row">
+        <div class="note-loc">FILIPIJNEN</div>
+        <div class="note-desc">
+          <h4 data-nl="Doktersbezoeken voor gezinnen" data-en="Family clinic visits">Doktersbezoeken voor gezinnen</h4>
+          <p data-nl="Dekking van essentiële medische kosten voor gezinnen zonder verzekering." data-en="Covering essential medical costs for families without insurance.">Dekking van essentiële medische kosten voor gezinnen zonder verzekering.</p>
+        </div>
+        <div class="note-status"><span class="dot"></span><span data-nl="LOPEND" data-en="ONGOING">LOPEND</span></div>
+      </div>
+      <div class="note-row">
+        <div class="note-loc" data-nl="NOG TE BEPALEN" data-en="TBD">NOG TE BEPALEN</div>
+        <div class="note-desc">
+          <h4 data-nl="Startkapitaal voor kleine ondernemingen" data-en="Small-business start-up grants">Startkapitaal voor kleine ondernemingen</h4>
+          <p data-nl="Startfinanciering zodat een ouder een stabiel, lokaal inkomen kan opbouwen." data-en="Seed funding so a parent can build a stable, local income.">Startfinanciering zodat een ouder een stabiel, lokaal inkomen kan opbouwen.</p>
+        </div>
+        <div class="note-status"><span class="dot"></span><span data-nl="GEPLAND" data-en="PLANNED">GEPLAND</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="story">
+  <div class="wrap story-grid">
+    <div>
+      <blockquote data-nl="&ldquo;Omdat iemand in België geloofde dat mijn schooljaar telde, kon ik het afmaken.&rdquo;" data-en="&ldquo;Because someone in Belgium believed my school year mattered, I got to finish it.&rdquo;">&ldquo;Omdat iemand in België geloofde dat mijn schooljaar telde, kon ik het afmaken.&rdquo;</blockquote>
+      <div class="attribution" data-nl="Een leerling gesteund via ons onderwijsprogramma" data-en="A student supported through our education program">Een leerling gesteund via ons onderwijsprogramma</div>
+    </div>
+    <div class="story-photo" data-nl="[ projectfoto ]" data-en="[ project photo ]">[ projectfoto ]</div>
+  </div>
+</section>
+
+<section class="involved" id="involved">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-eyebrow" data-nl="Steun ons" data-en="Get involved">Steun ons</div>
+      <h2 data-nl="Drie manieren om te helpen." data-en="Three ways to help.">Drie manieren om te helpen.</h2>
+    </div>
+    <div class="involved-grid">
+      <div class="involved-card">
+        <h3 data-nl="Sponsor een project" data-en="Sponsor a project">Sponsor een project</h3>
+        <p data-nl="Financier een specifiek project rechtstreeks — een schooljaar, een doktersbezoek, een kleine beurs." data-en="Fund a specific project directly — a school year, a clinic visit, a small grant.">Financier een specifiek project rechtstreeks — een schooljaar, een doktersbezoek, een kleine beurs.</p>
+        <a href="#donate" data-nl="Doe een gift" data-en="Make a gift">Doe een gift</a>
+      </div>
+      <div class="involved-card">
+        <h3 data-nl="Geef maandelijks" data-en="Give monthly">Geef maandelijks</h3>
+        <p data-nl="Vaste, kleine maandelijkse giften laten ons projecten steunen die meer dan een jaar duren." data-en="Steady, small monthly gifts let us commit to projects that take more than one year.">Vaste, kleine maandelijkse giften laten ons projecten steunen die meer dan een jaar duren.</p>
+        <a href="#donate" data-nl="Stel een gift in" data-en="Set up a gift">Stel een gift in</a>
+      </div>
+      <div class="involved-card">
+        <h3 data-nl="Neem contact op" data-en="Get in touch">Neem contact op</h3>
+        <p data-nl="Vragen over een project, of wil je er zelf een voorstellen? We zijn een klein team — neem gerust contact op." data-en="Questions about a project, or want to propose one? We're a small team — reach out directly.">Vragen over een project, of wil je er zelf een voorstellen? We zijn een klein team — neem gerust contact op.</p>
+        <a href="#contact" data-nl="Contacteer ons" data-en="Contact us">Contacteer ons</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#" class="brand"><span class="mark"></span>Morihbet v.z.w.</a>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4 data-nl="Adres" data-en="Address">Adres</h4>
+          <p>Gauwstraat 25</p>
+          <p>9660 Brakel, België</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-nl="Contact" data-en="Contact">Contact</h4>
+          <a href="mailto:morihbet@yahoo.com">morihbet@yahoo.com</a>
+          <a href="tel:+3255427015">Tel. 055 42 70 15</a>
+          <a href="tel:+32487733042">GSM. 0487 73 30 42</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-nl="Ondernemingsnummer" data-en="Registration">Ondernemingsnummer</h4>
+          <p>0526.839.266</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Morihbet v.z.w.</span>
+      <span>Morgen is het beter — Tomorrow will be better — Demain c'est mieux</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var buttons = document.querySelectorAll('[data-lang-btn]');
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-nl]').forEach(function(el){
+      var val = el.getAttribute(lang === 'nl' ? 'data-nl' : 'data-en');
+      if(val !== null){ el.innerHTML = val; }
+    });
+    buttons.forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+    });
+  }
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){ setLang(btn.getAttribute('data-lang-btn')); });
+  });
+
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if(menuBtn && mobileMenu){
+    menuBtn.addEventListener('click', function(){
+      var isOpen = mobileMenu.classList.toggle('open');
+      menuBtn.classList.toggle('open', isOpen);
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        mobileMenu.classList.remove('open');
+        menuBtn.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

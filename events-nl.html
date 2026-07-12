@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evenementen — Morihbet v.z.w.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B2A4A;
+    --dawn:#E8703A;
+    --gold:#F0B429;
+    --paper:#F1EEE4;
+    --paper-light:#F8F5EC;
+    --ink:#211C18;
+    --muted:#5B554C;
+    --line: rgba(33,28,24,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; margin:0; line-height:1.08; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-light);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1140px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:11px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px;
+    text-decoration:none; color:var(--ink);
+  }
+  .brand .mark{
+    width:32px; height:32px; border-radius:50%;
+    background:conic-gradient(from 200deg, var(--night), var(--dawn), var(--gold), var(--night));
+    flex-shrink:0;
+  }
+  nav ul{ list-style:none; display:flex; gap:22px; margin:0; padding:0; }
+  nav a{ text-decoration:none; font-weight:500; font-size:14px; color:var(--night); }
+  nav a:hover{ color:var(--dawn); }
+  nav a.current{ color:var(--dawn); }
+  .navlinks-desktop{ display:flex; align-items:center; gap:16px; }
+  .nav-cta{
+    background:var(--night); color:var(--paper-light) !important;
+    padding:9px 16px; border-radius:20px; font-size:13.5px; font-weight:600;
+    text-decoration:none; white-space:nowrap;
+  }
+  .nav-cta:hover{ background:var(--dawn); }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; position:relative; z-index:60; }
+  .menu-btn span{ display:block; width:22px; height:2px; background:var(--night); margin:5px 0; transition:transform .2s ease, opacity .2s ease; }
+  .menu-btn.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2){ opacity:0; }
+  .menu-btn.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu{ display:none; }
+  .mobile-menu.open{
+    display:flex; flex-direction:column;
+    background:var(--paper-light); border-top:1px solid var(--line);
+    padding:6px 28px 24px; gap:0;
+  }
+  .mobile-menu a{
+    padding:14px 0; font-size:15.5px; font-weight:500; color:var(--night);
+    text-decoration:none; border-bottom:1px solid var(--line);
+  }
+  .mobile-menu a.current{ color:var(--dawn); }
+  .mobile-menu a.mobile-cta{
+    border-bottom:none; text-align:center; margin-top:16px;
+    background:var(--night); color:var(--paper-light); border-radius:20px;
+    padding:13px 0; font-weight:600;
+  }
+  .mobile-menu .lang-toggle{ margin-top:16px; align-self:center; }
+
+  .lang-toggle{
+    display:flex; align-items:center; border:1.5px solid var(--night);
+    border-radius:16px; overflow:hidden; font-family:'IBM Plex Mono', monospace;
+    font-size:12px; font-weight:500;
+  }
+  .lang-toggle button{
+    background:none; border:none; cursor:pointer;
+    padding:7px 14px; color:var(--night); font-family:inherit; font-size:inherit; font-weight:inherit;
+  }
+  .lang-toggle button.active{ background:var(--night); color:var(--paper-light); }
+
+  /* ---------- PAGE HEADER ---------- */
+  .pagehead{ padding:64px 0 40px; border-bottom:1px solid var(--line); }
+  .section-eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--dawn); font-weight:500; margin-bottom:16px;
+  }
+  .pagehead h1{ font-size:clamp(32px,4.2vw,50px); color:var(--night); }
+  .pagehead p{ font-size:16.5px; color:var(--muted); margin-top:16px; max-width:60ch; line-height:1.6; }
+
+  /* ---------- EVENT TICKETS ---------- */
+  .events{ padding:56px 0 30px; }
+  .section-head{ max-width:58ch; margin-bottom:40px; }
+  .section-head h2{ font-size:clamp(24px,3vw,30px); color:var(--night); }
+
+  .ticket-list{ display:flex; flex-direction:column; gap:18px; }
+  .ticket{
+    display:grid; grid-template-columns:120px 1fr auto;
+    background:var(--paper-light);
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(27,42,74,0.07);
+    overflow:hidden;
+  }
+  .ticket-date{
+    background:var(--night); color:var(--paper-light);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px 10px;
+    position:relative;
+  }
+  .ticket-date .day{ font-family:'Fraunces', serif; font-size:32px; font-weight:700; color:var(--gold); }
+  .ticket-date .month{ font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.08em; margin-top:2px; opacity:0.85; }
+  .ticket-date::after{
+    content:"";
+    position:absolute; right:-9px; top:50%; transform:translateY(-50%);
+    width:18px; height:18px; border-radius:50%;
+    background:var(--paper); box-shadow: 0 0 0 4px var(--paper-light) inset;
+  }
+  .perforation{
+    border-left:2px dashed rgba(33,28,24,0.18);
+  }
+  .ticket-body{
+    padding:20px 24px; border-left:2px dashed rgba(33,28,24,0.18);
+  }
+  .ticket-tag{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em;
+    color:var(--dawn); text-transform:uppercase; font-weight:500;
+  }
+  .ticket-body h3{ font-size:19px; color:var(--night); margin-top:6px; }
+  .ticket-meta{ font-size:13.5px; color:var(--muted); margin-top:6px; }
+  .ticket-desc{ font-size:14px; color:var(--muted); margin-top:8px; line-height:1.5; max-width:56ch; }
+  .ticket-action{
+    display:flex; align-items:center; padding:0 24px;
+  }
+  .ticket-btn{
+    background:var(--dawn); color:var(--paper-light); border:none;
+    padding:11px 20px; border-radius:20px; font-weight:700; font-size:13.5px;
+    cursor:pointer; white-space:nowrap;
+  }
+  .ticket-btn:hover{ background:var(--night); }
+
+  /* ---------- REGISTRATION FORM ---------- */
+  .register{ padding:70px 0 90px; }
+  .register-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:start; }
+  .register h2{ font-size:clamp(24px,3vw,30px); color:var(--night); }
+  .register-intro p{ font-size:15.5px; color:var(--muted); margin-top:14px; line-height:1.6; max-width:44ch; }
+
+  .form-card{
+    background:var(--paper-light); border-radius:10px; padding:32px;
+    box-shadow:0 2px 14px rgba(27,42,74,0.08);
+  }
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block; font-size:13px; font-weight:600; color:var(--night); margin-bottom:6px;
+  }
+  .field input, .field select, .field textarea{
+    width:100%; padding:11px 13px; border-radius:6px; border:1.5px solid var(--line);
+    background:var(--paper); font-family:'Work Sans', sans-serif; font-size:14.5px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--dawn);
+  }
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .submit-btn{
+    background:var(--night); color:var(--paper-light); border:none;
+    padding:14px 26px; border-radius:22px; font-weight:700; font-size:15px;
+    cursor:pointer; width:100%; margin-top:6px;
+  }
+  .submit-btn:hover{ background:var(--dawn); }
+  .form-note{ font-size:12.5px; color:var(--muted); margin-top:14px; line-height:1.5; }
+  .confirm-msg{
+    display:none; background:rgba(232,112,58,0.12); border:1.5px solid var(--dawn);
+    border-radius:8px; padding:16px 18px; font-size:14px; color:var(--night); margin-top:18px;
+  }
+  .confirm-msg.show{ display:block; }
+
+  footer{ background:var(--night); color:var(--paper); padding:34px 0; text-align:center; font-size:13px; opacity:0.65; }
+
+  @media (max-width: 880px){
+    .navlinks-desktop{ display:none; }
+    .menu-btn{ display:block; }
+    .register-grid{ grid-template-columns:1fr; }
+    .ticket{ grid-template-columns:90px 1fr; }
+    .ticket-action{ grid-column:1 / -1; padding:0 24px 20px; }
+    .field-row{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+  :focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <a href="morihbet-index-nl.html" class="brand"><span class="mark"></span>Morihbet v.z.w.</a>
+    <div class="navlinks-desktop">
+      <nav>
+        <ul>
+          <li><a href="morihbet-index-nl.html#mission" data-nl="Over ons" data-en="About">Over ons</a></li>
+          <li><a href="gallery-nl.html" data-nl="Foto's" data-en="Gallery">Foto's</a></li>
+          <li><a href="events-nl.html" class="current" data-nl="Evenementen" data-en="Events">Evenementen</a></li>
+        </ul>
+      </nav>
+      <a href="morihbet-index-nl.html#donate" class="nav-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+      <div class="lang-toggle">
+        <button type="button" data-lang-btn="nl" class="active">NL</button>
+        <button type="button" data-lang-btn="en">EN</button>
+      </div>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu openen" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="morihbet-index-nl.html#mission" data-nl="Over ons" data-en="About">Over ons</a>
+    <a href="gallery-nl.html" data-nl="Foto's" data-en="Gallery">Foto's</a>
+    <a href="events-nl.html" class="current" data-nl="Evenementen" data-en="Events">Evenementen</a>
+    <a href="morihbet-index-nl.html#donate" class="mobile-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+    <div class="lang-toggle">
+      <button type="button" data-lang-btn="nl" class="active">NL</button>
+      <button type="button" data-lang-btn="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="section-eyebrow" data-nl="Agenda" data-en="Agenda">Agenda</div>
+    <h1 data-nl="Doe mee met een evenement." data-en="Join an event.">Doe mee met een evenement.</h1>
+    <p data-nl="Van een infoavond tot een benefietdiner — hier vind je onze eerstvolgende evenementen en kan je je meteen inschrijven." data-en="From an info evening to a benefit dinner — find our upcoming events here and register right away.">Van een infoavond tot een benefietdiner — hier vind je onze eerstvolgende evenementen en kan je je meteen inschrijven.</p>
+  </div>
+</section>
+
+<section class="events">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 data-nl="Eerstvolgende evenementen" data-en="Upcoming events">Eerstvolgende evenementen</h2>
+    </div>
+    <div class="ticket-list">
+
+      <div class="ticket">
+        <div class="ticket-date"><span class="day">14</span><span class="month" data-nl="SEP" data-en="SEP">SEP</span></div>
+        <div class="ticket-body">
+          <div class="ticket-tag" data-nl="INFOAVOND" data-en="INFO EVENING">INFOAVOND</div>
+          <h3 data-nl="Kennismakingsavond Morihbet" data-en="Morihbet introduction evening">Kennismakingsavond Morihbet</h3>
+          <div class="ticket-meta" data-nl="19:30 · Parochiezaal, Brakel" data-en="7:30 PM · Parish Hall, Brakel">19:30 · Parochiezaal, Brakel</div>
+          <div class="ticket-desc" data-nl="Maak kennis met ons werk en onze lopende projecten in de Filipijnen. Iedereen welkom, gratis toegang." data-en="Get to know our work and current projects in the Philippines. Everyone welcome, free entry.">Maak kennis met ons werk en onze lopende projecten in de Filipijnen. Iedereen welkom, gratis toegang.</div>
+        </div>
+        <div class="ticket-action">
+          <button class="ticket-btn" data-event="Kennismakingsavond Morihbet — 14 september" data-nl="Inschrijven" data-en="Register">Inschrijven</button>
+        </div>
+      </div>
+
+      <div class="ticket">
+        <div class="ticket-date"><span class="day">11</span><span class="month" data-nl="OKT" data-en="OCT">OKT</span></div>
+        <div class="ticket-body">
+          <div class="ticket-tag" data-nl="BENEFIET" data-en="BENEFIT">BENEFIET</div>
+          <h3 data-nl="Benefietdiner voor het schoolproject" data-en="Benefit dinner for the school project">Benefietdiner voor het schoolproject</h3>
+          <div class="ticket-meta" data-nl="18:30 · Zaal De Kouter, Brakel · €25 p.p." data-en="6:30 PM · Zaal De Kouter, Brakel · €25 p.p.">18:30 · Zaal De Kouter, Brakel · €25 p.p.</div>
+          <div class="ticket-desc" data-nl="De volledige opbrengst gaat naar schoolgeld voor leerlingen in ons onderwijsprogramma." data-en="All proceeds go toward tuition for students in our education program.">De volledige opbrengst gaat naar schoolgeld voor leerlingen in ons onderwijsprogramma.</div>
+        </div>
+        <div class="ticket-action">
+          <button class="ticket-btn" data-event="Benefietdiner voor het schoolproject — 11 oktober" data-nl="Inschrijven" data-en="Register">Inschrijven</button>
+        </div>
+      </div>
+
+      <div class="ticket">
+        <div class="ticket-date"><span class="day">29</span><span class="month" data-nl="NOV" data-en="NOV">NOV</span></div>
+        <div class="ticket-body">
+          <div class="ticket-tag" data-nl="VRIJWILLIGERS" data-en="VOLUNTEERS">VRIJWILLIGERS</div>
+          <h3 data-nl="Vrijwilligersdag: pakketten klaarmaken" data-en="Volunteer day: packing supplies">Vrijwilligersdag: pakketten klaarmaken</h3>
+          <div class="ticket-meta" data-nl="10:00 – 14:00 · Opslagruimte Gauwstraat 25" data-en="10:00 AM – 2:00 PM · Storage space, Gauwstraat 25">10:00 – 14:00 · Opslagruimte Gauwstraat 25</div>
+          <div class="ticket-desc" data-nl="Help mee met het klaarmaken van medische en schoolpakketten voor verzending. Lunch voorzien." data-en="Help prepare medical and school supply packages for shipping. Lunch provided.">Help mee met het klaarmaken van medische en schoolpakketten voor verzending. Lunch voorzien.</div>
+        </div>
+        <div class="ticket-action">
+          <button class="ticket-btn" data-event="Vrijwilligersdag — 29 november" data-nl="Inschrijven" data-en="Register">Inschrijven</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="register" id="registerForm">
+  <div class="wrap register-grid">
+    <div class="register-intro">
+      <h2 data-nl="Schrijf je in" data-en="Register">Schrijf je in</h2>
+      <p data-nl="Vul het formulier in en je e-mailprogramma opent met je inschrijving klaar om naar ons te versturen." data-en="Fill in the form and your email app will open with your registration ready to send to us.">Vul het formulier in en je e-mailprogramma opent met je inschrijving klaar om naar ons te versturen.</p>
+    </div>
+    <div class="form-card">
+      <form id="regForm">
+        <div class="field">
+          <label for="eventSelect" data-nl="Evenement" data-en="Event">Evenement</label>
+          <select id="eventSelect" required>
+            <option value="" data-nl="Kies een evenement" data-en="Choose an event">Kies een evenement</option>
+            <option>Kennismakingsavond Morihbet — 14 september</option>
+            <option>Benefietdiner voor het schoolproject — 11 oktober</option>
+            <option>Vrijwilligersdag — 29 november</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="name" data-nl="Naam" data-en="Name">Naam</label>
+            <input type="text" id="name" required>
+          </div>
+          <div class="field">
+            <label for="email" data-nl="E-mailadres" data-en="Email address">E-mailadres</label>
+            <input type="email" id="email" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="phone" data-nl="Telefoon (optioneel)" data-en="Phone (optional)">Telefoon (optioneel)</label>
+            <input type="tel" id="phone">
+          </div>
+          <div class="field">
+            <label for="guests" data-nl="Aantal personen" data-en="Number of guests">Aantal personen</label>
+            <input type="number" id="guests" min="1" value="1">
+          </div>
+        </div>
+        <div class="field">
+          <label for="message" data-nl="Bericht (optioneel)" data-en="Message (optional)">Bericht (optioneel)</label>
+          <textarea id="message" rows="3"></textarea>
+        </div>
+        <button type="submit" class="submit-btn" data-nl="Inschrijving versturen" data-en="Send registration">Inschrijving versturen</button>
+        <div class="form-note" data-nl="Dit opent je e-mailprogramma met een vooringevuld bericht naar morihbet@yahoo.com. Er wordt niets automatisch opgeslagen." data-en="This opens your email app with a pre-filled message to morihbet@yahoo.com. Nothing is stored automatically.">Dit opent je e-mailprogramma met een vooringevuld bericht naar morihbet@yahoo.com. Er wordt niets automatisch opgeslagen.</div>
+        <div class="confirm-msg" id="confirmMsg" data-nl="Je e-mailprogramma zou nu moeten openen met je inschrijving. Geen e-mailprogramma geopend? Schrijf ons rechtstreeks op morihbet@yahoo.com." data-en="Your email app should now open with your registration. Nothing opened? Email us directly at morihbet@yahoo.com.">Je e-mailprogramma zou nu moeten openen met je inschrijving. Geen e-mailprogramma geopend? Schrijf ons rechtstreeks op morihbet@yahoo.com.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span data-nl="© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, België" data-en="© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, Belgium">© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, België</span>
+</footer>
+
+<script>
+(function(){
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-nl]').forEach(function(el){
+      var val = el.getAttribute(lang === 'nl' ? 'data-nl' : 'data-en');
+      if(val !== null){ el.innerHTML = val; }
+    });
+    document.querySelectorAll('[data-lang-btn]').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+    });
+  }
+  document.querySelectorAll('[data-lang-btn]').forEach(function(btn){
+    btn.addEventListener('click', function(){ setLang(btn.getAttribute('data-lang-btn')); });
+  });
+
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if(menuBtn && mobileMenu){
+    menuBtn.addEventListener('click', function(){
+      var isOpen = mobileMenu.classList.toggle('open');
+      menuBtn.classList.toggle('open', isOpen);
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        mobileMenu.classList.remove('open');
+        menuBtn.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // ticket buttons scroll to form and preselect event
+  document.querySelectorAll('.ticket-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.getElementById('eventSelect').value = btn.getAttribute('data-event');
+      document.getElementById('registerForm').scrollIntoView({behavior:'smooth'});
+      document.getElementById('name').focus({preventScroll:true});
+    });
+  });
+
+  // form submit -> build mailto
+  document.getElementById('regForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var event = document.getElementById('eventSelect').value;
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
+    var guests = document.getElementById('guests').value;
+    var message = document.getElementById('message').value;
+
+    var subject = 'Inschrijving: ' + event;
+    var body = 'Evenement: ' + event + '\n'
+             + 'Naam: ' + name + '\n'
+             + 'E-mail: ' + email + '\n'
+             + 'Telefoon: ' + (phone || '-') + '\n'
+             + 'Aantal personen: ' + guests + '\n'
+             + 'Bericht: ' + (message || '-');
+
+    var mailtoLink = 'mailto:morihbet@yahoo.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.location.href = mailtoLink;
+
+    document.getElementById('confirmMsg').classList.add('show');
+  });
+})();
+</script>
+
+</body>
+</html>

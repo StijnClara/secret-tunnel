@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foto's — Morihbet v.z.w.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#1B2A4A;
+    --dawn:#E8703A;
+    --gold:#F0B429;
+    --paper:#F1EEE4;
+    --paper-light:#F8F5EC;
+    --ink:#211C18;
+    --muted:#5B554C;
+    --line: rgba(33,28,24,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Fraunces', serif; margin:0; line-height:1.08; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+  a{ color:inherit; }
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 28px; }
+
+  /* ---------- NAV (matches main page) ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-light);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1140px; margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:11px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px;
+    text-decoration:none; color:var(--ink);
+  }
+  .brand .mark{
+    width:32px; height:32px; border-radius:50%;
+    background:conic-gradient(from 200deg, var(--night), var(--dawn), var(--gold), var(--night));
+    flex-shrink:0;
+  }
+  nav ul{ list-style:none; display:flex; gap:22px; margin:0; padding:0; }
+  nav a{ text-decoration:none; font-weight:500; font-size:14px; color:var(--night); }
+  nav a:hover{ color:var(--dawn); }
+  nav a.current{ color:var(--dawn); }
+  .navlinks-desktop{ display:flex; align-items:center; gap:16px; }
+  .nav-cta{
+    background:var(--night); color:var(--paper-light) !important;
+    padding:9px 16px; border-radius:20px; font-size:13.5px; font-weight:600;
+    text-decoration:none; white-space:nowrap;
+  }
+  .nav-cta:hover{ background:var(--dawn); }
+  .menu-btn{ display:none; background:none; border:none; cursor:pointer; position:relative; z-index:60; }
+  .menu-btn span{ display:block; width:22px; height:2px; background:var(--night); margin:5px 0; transition:transform .2s ease, opacity .2s ease; }
+  .menu-btn.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2){ opacity:0; }
+  .menu-btn.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu{ display:none; }
+  .mobile-menu.open{
+    display:flex; flex-direction:column;
+    background:var(--paper-light); border-top:1px solid var(--line);
+    padding:6px 28px 24px; gap:0;
+  }
+  .mobile-menu a{
+    padding:14px 0; font-size:15.5px; font-weight:500; color:var(--night);
+    text-decoration:none; border-bottom:1px solid var(--line);
+  }
+  .mobile-menu a.current{ color:var(--dawn); }
+  .mobile-menu a.mobile-cta{
+    border-bottom:none; text-align:center; margin-top:16px;
+    background:var(--night); color:var(--paper-light); border-radius:20px;
+    padding:13px 0; font-weight:600;
+  }
+  .mobile-menu .lang-toggle{ margin-top:16px; align-self:center; }
+
+  .lang-toggle{
+    display:flex; align-items:center; border:1.5px solid var(--night);
+    border-radius:16px; overflow:hidden; font-family:'IBM Plex Mono', monospace;
+    font-size:12px; font-weight:500;
+  }
+  .lang-toggle button{
+    background:none; border:none; cursor:pointer;
+    padding:7px 14px; color:var(--night); font-family:inherit; font-size:inherit; font-weight:inherit;
+  }
+  .lang-toggle button.active{ background:var(--night); color:var(--paper-light); }
+
+  /* ---------- PAGE HEADER ---------- */
+  .pagehead{
+    padding:64px 0 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .section-eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--dawn); font-weight:500; margin-bottom:16px;
+  }
+  .pagehead h1{ font-size:clamp(32px,4.2vw,50px); color:var(--night); }
+  .pagehead p{ font-size:16.5px; color:var(--muted); margin-top:16px; max-width:60ch; line-height:1.6; }
+
+  /* ---------- FILTERS ---------- */
+  .filters{
+    display:flex; gap:10px; flex-wrap:wrap; padding:28px 0 8px;
+  }
+  .filter-btn{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:500;
+    padding:9px 16px; border-radius:16px; border:1.5px solid var(--night);
+    background:none; color:var(--night); cursor:pointer;
+  }
+  .filter-btn.active{ background:var(--night); color:var(--paper-light); }
+
+  /* ---------- GALLERY GRID ---------- */
+  .gallery{ padding:20px 0 90px; }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  .tile{
+    position:relative;
+    border-radius:6px;
+    overflow:hidden;
+    aspect-ratio:4/3;
+    cursor:pointer;
+    display:flex; align-items:flex-end;
+    box-shadow:0 2px 10px rgba(27,42,74,0.08);
+  }
+  .tile.tall{ aspect-ratio:4/5; }
+  .tile.wide{ grid-column:span 2; aspect-ratio:8/5; }
+  .tile-bg{
+    position:absolute; inset:0;
+  }
+  .tile-caption{
+    position:relative; z-index:2; width:100%;
+    padding:16px 16px 14px;
+    background:linear-gradient(180deg, transparent, rgba(27,42,74,0.75));
+    color:var(--paper-light);
+  }
+  .tile-loc{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em; opacity:0.85; }
+  .tile-title{ font-family:'Fraunces', serif; font-size:15.5px; font-weight:600; margin-top:2px; }
+
+  /* palette-based placeholder backgrounds standing in for real project photos */
+  .bg-1{ background:linear-gradient(135deg, #E8703A, #F0B429); }
+  .bg-2{ background:linear-gradient(135deg, #1B2A4A, #6A4E5C); }
+  .bg-3{ background:linear-gradient(135deg, #2C3F66, #E8703A); }
+  .bg-4{ background:linear-gradient(135deg, #F0B429, #E8703A); }
+  .bg-5{ background:linear-gradient(135deg, #1B2A4A, #2C3F66); }
+  .bg-6{ background:linear-gradient(135deg, #6A4E5C, #F0B429); }
+  .bg-7{ background:linear-gradient(135deg, #E8703A, #1B2A4A); }
+  .bg-8{ background:linear-gradient(135deg, #F0B429, #2C3F66); }
+
+  .empty-note{
+    text-align:center; color:var(--muted); font-size:14.5px; padding:60px 0; display:none;
+  }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    position:fixed; inset:0; background:rgba(27,42,74,0.92);
+    display:none; align-items:center; justify-content:center; z-index:100;
+    padding:40px;
+  }
+  .lightbox.open{ display:flex; }
+  .lightbox-inner{
+    max-width:720px; width:100%; background:var(--paper-light); border-radius:8px; overflow:hidden;
+  }
+  .lightbox-img{ aspect-ratio:4/3; }
+  .lightbox-body{ padding:24px 28px 28px; }
+  .lightbox-body .tile-loc{ color:var(--dawn); font-size:11.5px; }
+  .lightbox-body h3{ font-size:20px; color:var(--night); margin-top:6px; }
+  .lightbox-body p{ font-size:14.5px; color:var(--muted); margin-top:10px; line-height:1.55; }
+  .lightbox-close{
+    position:absolute; top:22px; right:28px; background:none; border:none;
+    color:var(--paper-light); font-size:28px; cursor:pointer; line-height:1;
+  }
+
+  /* ---------- CTA STRIP ---------- */
+  .cta-strip{
+    background:var(--night); color:var(--paper-light); padding:56px 0; text-align:center;
+  }
+  .cta-strip h2{ font-size:26px; }
+  .cta-strip p{ opacity:0.8; margin-top:10px; font-size:15px; }
+  .btn-primary{
+    background:var(--paper-light); color:var(--night); margin-top:24px;
+    padding:14px 28px; border-radius:24px; text-decoration:none;
+    font-weight:700; font-size:15px; display:inline-block;
+  }
+
+  footer{ background:var(--night); color:var(--paper); padding:34px 0; text-align:center; font-size:13px; opacity:0.65; }
+
+  @media (max-width: 880px){
+    .navlinks-desktop{ display:none; }
+    .menu-btn{ display:block; }
+    .grid{ grid-template-columns:repeat(2,1fr); }
+    .tile.wide{ grid-column:span 2; }
+  }
+  @media (max-width: 560px){
+    .grid{ grid-template-columns:1fr; }
+    .tile.wide{ grid-column:span 1; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+  :focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="navbar">
+    <a href="morihbet-index-nl.html" class="brand"><span class="mark"></span>Morihbet v.z.w.</a>
+    <div class="navlinks-desktop">
+      <nav>
+        <ul>
+          <li><a href="morihbet-index-nl.html#mission" data-nl="Over ons" data-en="About">Over ons</a></li>
+          <li><a href="morihbet-index-nl.html#fieldnotes" data-nl="Lopende projecten" data-en="Current Projects">Lopende projecten</a></li>
+          <li><a href="gallery-nl.html" class="current" data-nl="Foto's" data-en="Gallery">Foto's</a></li>
+          <li><a href="events-nl.html" data-nl="Evenementen" data-en="Events">Evenementen</a></li>
+        </ul>
+      </nav>
+      <a href="morihbet-index-nl.html#donate" class="nav-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+      <div class="lang-toggle">
+        <button type="button" data-lang-btn="nl" class="active">NL</button>
+        <button type="button" data-lang-btn="en">EN</button>
+      </div>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu openen" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="morihbet-index-nl.html#mission" data-nl="Over ons" data-en="About">Over ons</a>
+    <a href="morihbet-index-nl.html#fieldnotes" data-nl="Lopende projecten" data-en="Current Projects">Lopende projecten</a>
+    <a href="gallery-nl.html" class="current" data-nl="Foto's" data-en="Gallery">Foto's</a>
+    <a href="events-nl.html" data-nl="Evenementen" data-en="Events">Evenementen</a>
+    <a href="morihbet-index-nl.html#donate" class="mobile-cta" data-nl="Doneer" data-en="Donate">Doneer</a>
+    <div class="lang-toggle">
+      <button type="button" data-lang-btn="nl" class="active">NL</button>
+      <button type="button" data-lang-btn="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="pagehead">
+  <div class="wrap">
+    <div class="section-eyebrow" data-nl="Foto's uit het veld" data-en="Photos from the field">Foto's uit het veld</div>
+    <h1 data-nl="Ons werk in beeld." data-en="Our work, in pictures.">Ons werk in beeld.</h1>
+    <p data-nl="Beelden van de projecten die we samen met lokale gemeenschappen opzetten en steunen — gezondheidszorg, levensonderhoud en onderwijs." data-en="Images from the projects we set up and support together with local communities — healthcare, livelihood, and education.">Beelden van de projecten die we samen met lokale gemeenschappen opzetten en steunen — gezondheidszorg, levensonderhoud en onderwijs.</p>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="wrap">
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all" data-nl="Alles" data-en="All">Alles</button>
+      <button class="filter-btn" data-filter="healthcare" data-nl="Gezondheidszorg" data-en="Healthcare">Gezondheidszorg</button>
+      <button class="filter-btn" data-filter="livelihood" data-nl="Levensonderhoud" data-en="Livelihood">Levensonderhoud</button>
+      <button class="filter-btn" data-filter="education" data-nl="Onderwijs" data-en="Education">Onderwijs</button>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="tile wide" data-cat="education" data-title-nl="Start van het schooljaar" data-title-en="Start of the school year" data-desc-nl="Leerlingen die dit jaar via ons programma naar school kunnen." data-desc-en="Students able to attend school this year through our program.">
+        <div class="tile-bg bg-1"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ONDERWIJS</div>
+          <div class="tile-title" data-nl="Start van het schooljaar" data-en="Start of the school year">Start van het schooljaar</div>
+        </div>
+      </div>
+      <div class="tile" data-cat="healthcare" data-title-nl="Mobiele kliniekdag" data-title-en="Mobile clinic day" data-desc-nl="Een dag doktersconsultaties voor gezinnen zonder verzekering." data-desc-en="A day of medical consultations for families without insurance.">
+        <div class="tile-bg bg-2"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ZORG</div>
+          <div class="tile-title" data-nl="Mobiele kliniekdag" data-en="Mobile clinic day">Mobiele kliniekdag</div>
+        </div>
+      </div>
+      <div class="tile tall" data-cat="livelihood" data-title-nl="Nieuwe naaiwerkplaats" data-title-en="New sewing workshop" data-desc-nl="Startkapitaal hielp deze moeder een eigen naaiatelier op te zetten." data-desc-en="Seed funding helped this mother start her own sewing workshop.">
+        <div class="tile-bg bg-3"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · LEVENSONDERHOUD</div>
+          <div class="tile-title" data-nl="Nieuwe naaiwerkplaats" data-en="New sewing workshop">Nieuwe naaiwerkplaats</div>
+        </div>
+      </div>
+      <div class="tile" data-cat="education" data-title-nl="Boeken en schoolmateriaal" data-title-en="Books and school supplies" data-desc-nl="Uitdeling van schoolmateriaal aan het begin van het trimester." data-desc-en="Distribution of school supplies at the start of term.">
+        <div class="tile-bg bg-4"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ONDERWIJS</div>
+          <div class="tile-title" data-nl="Boeken en schoolmateriaal" data-en="Books and school supplies">Boeken en schoolmateriaal</div>
+        </div>
+      </div>
+      <div class="tile" data-cat="healthcare" data-title-nl="Vaccinatiedag" data-title-en="Vaccination day" data-desc-nl="Samenwerking met een lokale kliniek voor basisvaccinaties." data-desc-en="Partnering with a local clinic for basic vaccinations.">
+        <div class="tile-bg bg-5"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ZORG</div>
+          <div class="tile-title" data-nl="Vaccinatiedag" data-en="Vaccination day">Vaccinatiedag</div>
+        </div>
+      </div>
+      <div class="tile" data-cat="livelihood" data-title-nl="Marktdag" data-title-en="Market day" data-desc-nl="Verkoop van producten gemaakt door gezinnen in ons programma." data-desc-en="Selling goods made by families in our program.">
+        <div class="tile-bg bg-6"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · LEVENSONDERHOUD</div>
+          <div class="tile-title" data-nl="Marktdag" data-en="Market day">Marktdag</div>
+        </div>
+      </div>
+      <div class="tile wide" data-cat="education" data-title-nl="Diploma-uitreiking" data-title-en="Graduation day" data-desc-nl="Een van onze gesponsorde leerlingen rondt het schooljaar af." data-desc-en="One of our sponsored students completes the school year.">
+        <div class="tile-bg bg-7"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ONDERWIJS</div>
+          <div class="tile-title" data-nl="Diploma-uitreiking" data-en="Graduation day">Diploma-uitreiking</div>
+        </div>
+      </div>
+      <div class="tile" data-cat="healthcare" data-title-nl="Medicijnendistributie" data-title-en="Medicine distribution" data-desc-nl="Essentiële medicijnen worden verdeeld aan lokale gezinnen." data-desc-en="Essential medicines being distributed to local families.">
+        <div class="tile-bg bg-8"></div>
+        <div class="tile-caption">
+          <div class="tile-loc">FILIPIJNEN · ZORG</div>
+          <div class="tile-title" data-nl="Medicijnendistributie" data-en="Medicine distribution">Medicijnendistributie</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="empty-note" id="emptyNote" data-nl="Geen foto's in deze categorie." data-en="No photos in this category.">Geen foto's in deze categorie.</p>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="wrap">
+    <h2 data-nl="Zelf een project fotograferen?" data-en="Documenting a project yourself?">Zelf een project fotograferen?</h2>
+    <p data-nl="Als je namens Morihbet ter plaatse bent, laat het ons weten — we voegen je beelden graag toe." data-en="If you're on the ground for Morihbet, let us know — we'd love to add your photos.">Als je namens Morihbet ter plaatse bent, laat het ons weten — we voegen je beelden graag toe.</p>
+    <a href="mailto:morihbet@yahoo.com" class="btn-primary" data-nl="Neem contact op" data-en="Get in touch">Neem contact op</a>
+  </div>
+</section>
+
+<footer>
+  <span data-nl="© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, België" data-en="© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, Belgium">© 2026 Morihbet v.z.w. · Gauwstraat 25, 9660 Brakel, België</span>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Sluiten">&times;</button>
+  <div class="lightbox-inner">
+    <div class="lightbox-img" id="lightboxImg"></div>
+    <div class="lightbox-body">
+      <div class="tile-loc" id="lightboxLoc"></div>
+      <h3 id="lightboxTitle"></h3>
+      <p id="lightboxDesc"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var currentLang = 'nl';
+
+  function setLang(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-nl]').forEach(function(el){
+      var val = el.getAttribute(lang === 'nl' ? 'data-nl' : 'data-en');
+      if(val !== null){ el.innerHTML = val; }
+    });
+    document.querySelectorAll('[data-lang-btn]').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-lang-btn') === lang);
+    });
+  }
+  document.querySelectorAll('[data-lang-btn]').forEach(function(btn){
+    btn.addEventListener('click', function(){ setLang(btn.getAttribute('data-lang-btn')); });
+  });
+
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  if(menuBtn && mobileMenu){
+    menuBtn.addEventListener('click', function(){
+      var isOpen = mobileMenu.classList.toggle('open');
+      menuBtn.classList.toggle('open', isOpen);
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
+    mobileMenu.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        mobileMenu.classList.remove('open');
+        menuBtn.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // filtering
+  var buttons = document.querySelectorAll('.filter-btn');
+  var tiles = document.querySelectorAll('.tile');
+  var emptyNote = document.getElementById('emptyNote');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var f = btn.getAttribute('data-filter');
+      var visibleCount = 0;
+      tiles.forEach(function(t){
+        var show = (f === 'all' || t.getAttribute('data-cat') === f);
+        t.style.display = show ? '' : 'none';
+        if(show) visibleCount++;
+      });
+      emptyNote.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+  });
+
+  // lightbox
+  var lightbox = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbLoc = document.getElementById('lightboxLoc');
+  var lbTitle = document.getElementById('lightboxTitle');
+  var lbDesc = document.getElementById('lightboxDesc');
+
+  tiles.forEach(function(tile){
+    tile.addEventListener('click', function(){
+      var bgClass = tile.querySelector('.tile-bg').className.replace('tile-bg','').trim();
+      lbImg.className = 'lightbox-img ' + bgClass;
+      lbLoc.textContent = tile.querySelector('.tile-loc').textContent;
+      var titleAttr = currentLang === 'nl' ? 'data-title-nl' : 'data-title-en';
+      var descAttr = currentLang === 'nl' ? 'data-desc-nl' : 'data-desc-en';
+      lbTitle.textContent = tile.getAttribute(titleAttr);
+      lbDesc.textContent = tile.getAttribute(descAttr);
+      lightbox.classList.add('open');
+    });
+  });
+  document.getElementById('lightboxClose').addEventListener('click', function(){
+    lightbox.classList.remove('open');
+  });
+  lightbox.addEventListener('click', function(e){
+    if(e.target === lightbox){ lightbox.classList.remove('open'); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ lightbox.classList.remove('open'); }
+  });
+})();
+</script>
+
+</body>
+</html>
